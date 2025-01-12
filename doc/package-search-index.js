@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"fr.doranco.banque.entity"},{"l":"fr.doranco.banque.main"},{"l":"fr.doranco.banque.metier"}];updateSearchResults();
