@@ -1,5 +1,6 @@
 package fr.doranco.banque.entity;
 
+import java.util.HashSet;
 import java.util.Set;
 
 public class Client {
@@ -8,7 +9,7 @@ public class Client {
 	private String prenom;
 	private String email;
 	private String password;
-	private Set<Compte>comptes;
+	private Set<Compte>comptes = new HashSet<Compte>();
 	
 	public Client() {
 

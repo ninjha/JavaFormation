@@ -90,27 +90,44 @@ public abstract class ClientMetier {
 		for(Compte compte : client.getComptes()) {
 			if(compte.getTitre().equalsIgnoreCase(source)) {
 				compte1 = compte;
-			}
-			if(compte.getTitre().equalsIgnoreCase(destination)) {
+			}else if(compte.getTitre().equalsIgnoreCase(destination)) {
 				compte2 = compte;
-				
-				compte1.setSolde(compte1.getSolde() - montant); 
-				compte2.setSolde(compte2.getSolde() + montant);
-				
-				if(compte1.getTitre().equals("epargne") && compte2.getSolde() >= 25000) {
-					System.out.println("Le plafond du compte destination est atteint");
-					return false;
-				}
-				
-				if(compte1.getSolde() < montant) {
-					System.out.println("Solde insuffisant pour effectuer le virement.");
-					return false;
-				}else {
-					//Placer les requêtes SQL ici ???
-					return true;
-				}
-			}
+			}			
 		}
-		return false;	
+		
+		if (compte1 == null || compte2 == null) {
+	        System.out.println("Un ou plusieurs comptes n'ont pas été trouvés.");
+	        return false;
+	    }
+		
+		
+		if(compte1.getSolde() < montant) {
+			System.out.println(",Solde insuffisant pour effectuer le virement.");
+			return false;
+		}else {
+			compte2.setSolde(compte2.getSolde() + montant);
+			compte1.setSolde(compte1.getSolde() - montant);
+			
+			/* 
+				La logique voudrait que l'on vérifie le plafond du compte épargne au moment où l'on récupère les informations du compte,
+			 	puis que l'on revérifie après les opérations pour s'assurer de la conformité des règles métier. 
+			 	Ce qui signifierai de placer 2fois la même conditions. On pourrait aussi créer une classe spécique qui gererait les conditions
+			 	pour éffectuer les opération.
+			 	Cependant, que le plafond soit atteint avant ou après les opérations n'a pas d'importance : 
+			 	dans tous les cas, dépasser la limite autorisée rend l'opération invalide.
+			 	Par conséquent, nous plaçons la vérification du plafond juste après les opérations pour simplifier la logique.
+			 	Exemple 1 : Epargne = 24000, montant = 1300 => Epargne après opération : 24000 + 1300 = 25300 => Retourne false (plafond dépassé)
+			 	Exemple 2 : Epargne = 25000, montant = 300  => Epargne après opération : 25000 + 300 = 25300 => Retourne false (plafond dépassé)
+			 	Les deux cas illustrent que la vérification après l'opération capture bien tous les scénarios. 
+			*/
+
+			if(compte1.getTitre().equals("epargne") && compte2.getSolde() >= 25000) {
+				System.out.println("Le plafond du compte destination est atteint");
+				return false;
+			}
+			 
+			//Appeller une méthode qui gère les requêtes SQL ici
+			return true;
+		}	
 	}
 }
